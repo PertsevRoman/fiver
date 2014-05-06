@@ -59,10 +59,12 @@ unix:!macx: LIBS += -L$$PWD/../../../../opt/htmlcxx/lib/ -lhtmlcxx -lcss_parser 
 INCLUDEPATH += $$PWD/../../../../opt/htmlcxx/include
 DEPENDPATH += $$PWD/../../../../opt/htmlcxx/include
 
+unix:!macx: LIBS += -L$$PWD/../../../../opt/o2scl/lib/ -lo2scl -lo2scl_part -lo2scl_eos
+
+INCLUDEPATH += $$PWD/../../../../opt/o2scl/include
+DEPENDPATH += $$PWD/../../../../opt/o2scl/include
+
 unix:!macx: LIBS += -L$$PWD/../../../../opt/gsl/lib/ -lgsl -lgslcblas
 
 INCLUDEPATH += $$PWD/../../../../opt/gsl/include
 DEPENDPATH += $$PWD/../../../../opt/gsl/include
-
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../opt/gsl/lib/libgsl.a
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../opt/gsl/lib/libgslcblas.a

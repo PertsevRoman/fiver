@@ -17,20 +17,31 @@ TriangleNumber TriangleMathCollector::getSum() {
 }
 
 TriangleNumber TriangleMathCollector::getMedian() {
-	throw "Not yet implemented";
+    std::sort(triangles.begin(), triangles.end());
+
+    TriangleNumber res;
+    if(triangles.size() / 2) {
+        res = triangles.at(triangles.size() / 2);
+    } else {
+        TriangleNumber first = triangles.at(triangles.size() / 2 - 1);
+        TriangleNumber second = triangles.at(triangles.size() / 2);
+
+        if(first == second) {
+            res = second;
+        } else {
+            res = first + second;
+            res.setCenter(res.getCenter() / 2);
+            res.setLeft(res.getLeft() / 2);
+            res.setRight(res.getRight() / 2);
+        }
+    }
+
+    return res;
 }
 
 void TriangleMathCollector::add(TriangleNumber val) {
     triangles.push_back(val);
 }
-
-void TriangleMathCollector::remove(TriangleNumber val) {
-    triangles.remove(val);
-}
-
-//void TriangleMathCollector::remove(int index) {
-//    triangles.remove(triangles[index]);
-//}
 
 int TriangleMathCollector::size() {
     return triangles.size();

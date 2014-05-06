@@ -4,13 +4,9 @@ QMap<int, valsBind> TriangleNumber::baseBinds;
 
 TriangleNumber::TriangleNumber(double c, double l, double r) :
     center(c), left(l), right(r) {
-
-    integrationCount = 1000;
-    w = gsl_integration_workspace_alloc(integrationCount);
 }
 
 TriangleNumber::~TriangleNumber() {
-    gsl_integration_workspace_free(w);
 }
 
 double TriangleNumber::getCenter() {
@@ -49,15 +45,15 @@ TriangleNumber& TriangleNumber::operator+=(TriangleNumber &r) {
     return *this;
 }
 
-bool TriangleNumber::operator==(const TriangleNumber &r) {
+bool TriangleNumber::operator==(const TriangleNumber &r) const {
     return this->center == r.center && this->left == r.left && this->right == r.right;
 }
 
-bool TriangleNumber::operator <(const TriangleNumber &r) {
+bool TriangleNumber::operator <(const TriangleNumber &r) const {
     return this->getCriteria() < r.getCriteria();
 }
 
-bool TriangleNumber::operator >(const TriangleNumber &r) {
+bool TriangleNumber::operator >(const TriangleNumber &r) const {
     return this->getCriteria() < r.getCriteria();
 }
 
@@ -67,31 +63,18 @@ bool TriangleNumber::operator >(const TriangleNumber &r) {
  * @param data данные (не используются)
  * @return значение критериальной функции
  */
-double getCriteriaFuncValue(double x, void * data) {
-    double* dData = (double*) data;
-
-    double center   = dData[0];
-    double left     = dData[1];
-    double right    = dData[2];
-
+double TriangleNumber::getCriteriaFuncValue(double x) {
     return x * ((left * x + center - left) + (center + right - right * x));
 }
 
 double TriangleNumber::getCriteria() const {
-    double result, error;
+    o2scl::funct_mfptr<TriangleNumber> functor(const_cast<TriangleNumber*>(this), &TriangleNumber::getCriteriaFuncValue);
 
-    double data[3];
-    data[0] = center;
-    data[1] = left;
-    data[2] = right;
+    o2scl::inte_qag_gsl<> g;
 
-    gsl_function mag;
-    mag.function = &getCriteriaFuncValue;
-    mag.params = &data[0];
+    double res = g.integ(functor, 0.0, 1.0);
 
-    gsl_integration_qags(&mag, 0, 1, 0, 1e-7, integrationCount, w, &result, &error);
-
-    return result;
+    return res;
 }
 
 void TriangleNumber::addBaseBind(int key, TriangleNumber num, std::string strID) {

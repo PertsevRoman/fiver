@@ -13,7 +13,7 @@ class TriangleMathCollector;
 
 class TriangleMathCollector
 {
-    std::list<TriangleNumber> triangles;
+    std::vector<TriangleNumber> triangles;
 
 public:
     /**
@@ -31,18 +31,6 @@ public:
      * @param val треугольное число
      */
     void add(TriangleNumber val);
-    /**
-     * @brief remove удаляет треугольное число из коллектора
-     * @param val треугольное число
-     * @return true если число существует и удалено, иначе false
-     */
-    void remove(TriangleNumber val);
-    /**
-     * @brief remove удаляет число с определенным порядковым номером
-     * @param index
-     * @return true если число существует и удалено, иначе false
-     */
-//    void remove(int index);
     /**
      * @brief size возвращает размер коллектора
      * @return размер

@@ -175,6 +175,9 @@
             </item>
             <item row="0" column="0" rowspan="4">
              <widget class="QTableView" name="articleList">
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
               <attribute name="horizontalHeaderCascadingSectionResizes">
                <bool>true</bool>
               </attribute>

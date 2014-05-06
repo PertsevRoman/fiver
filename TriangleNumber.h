@@ -10,7 +10,8 @@
 
 #include <boost/tuple/tuple.hpp>
 
-#include <gsl/gsl_integration.h>
+#include <o2scl/funct.h>
+#include <o2scl/inte_qag_gsl.h>
 
 class TriangleNumber;
 
@@ -24,11 +25,6 @@ class TriangleNumber {
 
     //Ключевые идентификаторы
     static QMap<int, valsBind> baseBinds;
-
-    //обслуживающие данные для интегрирования
-    int integrationCount;
-    gsl_integration_workspace *w;
-
 public:
     //Конструктор-деструктор
     explicit TriangleNumber(double c = .0, double l = .0, double r = .0);
@@ -44,9 +40,15 @@ public:
 
     TriangleNumber operator +(TriangleNumber &r);
     TriangleNumber& operator +=(TriangleNumber &r);
-    bool operator ==(const TriangleNumber &r);
-    bool operator <(const TriangleNumber &r);
-    bool operator >(const TriangleNumber &r);
+    bool operator ==(const TriangleNumber &r) const;
+    bool operator <(const TriangleNumber &r) const;
+    bool operator >(const TriangleNumber &r) const;
+
+    /**
+     * @brief getCriteriaFuncValue Возвращает значение функции критерия
+     * @param x параметр функции
+     */
+    double getCriteriaFuncValue(double x);
     /**
      * @brief getCriteria возвращает значние критерия сравнения
      * @return критерий сравнения
