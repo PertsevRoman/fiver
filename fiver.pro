@@ -54,7 +54,6 @@ unix:!macx {
     INCLUDEPATH += $$PWD/../../../../opt/boost/include
     DEPENDPATH += $$PWD/../../../../opt/boost/include
 
-
     LIBS += -L$$PWD/../../../../opt/htmlcxx/lib/ -lhtmlcxx -lcss_parser -lcss_parser_pp
 
     INCLUDEPATH += $$PWD/../../../../opt/htmlcxx/include
