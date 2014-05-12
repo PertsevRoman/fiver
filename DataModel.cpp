@@ -126,7 +126,75 @@ bool DataModel::articleExists(std::string article) {
 }
 
 void DataModel::refreshMarks() {
-    throw "Not yet implemented";
+    boost::thread *th = new boost::thread([this](){
+        emit recieveInfo(Errors::NoError, "Обновление оценок");
+        QSqlDatabase cloned = QSqlDatabase::cloneDatabase(db, "CLONED_CONNECT2");
+
+        cloned.open();
+
+        QString queryStr = QString("SELECT article_id, sum(vote = \"NB\") as NB, ") +
+                QString("sum(vote = \"NM\") as NM, sum(vote = \"NS\") as NS,") +
+                QString("sum(vote = \"NO\") as NO, sum(vote = \"ZO\") as ZO,") +
+                QString("sum(vote = \"PO\") as PO, sum(vote = \"PS\") as PS,") +
+                QString("sum(vote = \"PM\") as PM, sum(vote = \"PB\") as PB") +
+                QString(" FROM marks.votes where article_id in") +
+                QString(" (select distinct(article_id) FROM marks.votes) group by article_id;");
+
+        if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+            cloned.transaction();
+        }
+
+        QSqlQuery votes(queryStr, cloned);
+        votes.exec();
+
+        TriangleMathCollector collector;
+
+        QString updStr = "UPDATE map SET artvote = :vote_val WHERE id = :id_val;";
+        QSqlQuery update(cloned);
+        update.prepare(updStr);
+
+        while(votes.next()) {
+            collector.clear();
+
+            int id = votes.value(0).toInt();
+
+            update.bindValue(":id_val", id);
+
+            for(int i = 1; i < 10; i++) {
+                int count = votes.value(i).toInt();
+
+                for(int j = 0; j < count; j++) {
+                    TriangleNumber tr = TriangleNumber::getBindedTriangle(i - 5);
+                    collector.add(tr);
+                }
+            }
+
+            QString voteStr = QString::fromStdString(TriangleNumber::getBindedStrID(collector.getMedian()));
+            if(voteStr.size()) {
+                update.bindValue(":vote_val", voteStr);
+                if(!update.exec()) {
+                    qDebug() << "Последний провалившийся запрос: " << update.executedQuery() << "; vote, id = " << voteStr << ", " << id;
+                    if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+                        cloned.rollback();
+                    }
+
+                    emit recieveInfo(Errors::Error, "Во время выполнения обновления произошла ошибка");
+                    break;
+                } else {
+                    qDebug() << "Последний успешный запрос: " << update.executedQuery();
+                }
+            }
+        }
+
+        if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+            cloned.commit();
+        }
+
+        cloned.close();
+        emit recieveInfo(Errors::NoError, "Обновление оценок завершено");
+    });
+
+    th->detach();
 }
 
 void DataModel::onImageInfoLoaded() {

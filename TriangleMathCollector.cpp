@@ -17,22 +17,45 @@ TriangleNumber TriangleMathCollector::getSum() {
 }
 
 TriangleNumber TriangleMathCollector::getMedian() {
-    std::sort(triangles.begin(), triangles.end());
-
+    qSort(triangles.begin(), triangles.end());
     TriangleNumber res;
-    if(triangles.size() / 2) {
-        res = triangles.at(triangles.size() / 2);
+
+    int halfSize = triangles.size() / 2;
+
+    if(triangles.size() % 2) {
+        res = triangles.at(halfSize);
     } else {
-        TriangleNumber first = triangles.at(triangles.size() / 2 - 1);
-        TriangleNumber second = triangles.at(triangles.size() / 2);
+        TriangleNumber first = triangles.at(halfSize - 1);
+        TriangleNumber second = triangles.at(halfSize);
 
         if(first == second) {
             res = second;
         } else {
-            res = first + second;
-            res.setCenter(res.getCenter() / 2);
-            res.setLeft(res.getLeft() / 2);
-            res.setRight(res.getRight() / 2);
+            if(triangles.size() > 2) {
+                TriangleNumber firstSum;
+                TriangleNumber secondSum;
+
+                for(int i = 0; i < halfSize - 1; i++) {
+                    firstSum += triangles[i];
+                }
+
+                for(int i = halfSize + 1; i < triangles.size(); i++) {
+                    secondSum += triangles[i];
+                }
+
+                firstSum = firstSum - first;
+                secondSum = secondSum - second;
+
+                if(firstSum < secondSum) {
+                    res = second;
+                } else if(firstSum > secondSum) {
+                    res = first;
+                } else {
+                    res = first;
+                }
+            } else {
+                res = second;
+            }
         }
     }
 
@@ -40,7 +63,8 @@ TriangleNumber TriangleMathCollector::getMedian() {
 }
 
 void TriangleMathCollector::add(TriangleNumber val) {
-    triangles.push_back(val);
+    qDebug() << "Добавление значения";
+    triangles.append(val);
 }
 
 int TriangleMathCollector::size() {
@@ -56,6 +80,6 @@ bool TriangleMathCollector::exists(TriangleNumber val) {
 }
 
 int TriangleMathCollector::count(TriangleNumber val) {
-	throw "Not yet implemented";
+    return triangles.size();
 }
 

@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QDebug>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -27,7 +28,8 @@ class TriangleNumber {
     static QMap<int, valsBind> baseBinds;
 public:
     //Конструктор-деструктор
-    explicit TriangleNumber(double c = .0, double l = .0, double r = .0);
+    TriangleNumber(double c = .0, double l = .0, double r = .0);
+    TriangleNumber(const TriangleNumber & c);
     ~TriangleNumber();
 
     //GET-методы и SET-методы для параметров треугольного числа
@@ -38,7 +40,9 @@ public:
     double getLeft();
     void setLeft(double left);
 
+    TriangleNumber & operator = (const TriangleNumber & r);
     TriangleNumber operator +(TriangleNumber &r);
+    TriangleNumber operator -(TriangleNumber &r);
     TriangleNumber& operator +=(TriangleNumber &r);
     bool operator ==(const TriangleNumber &r) const;
     bool operator <(const TriangleNumber &r) const;
@@ -73,6 +77,12 @@ public:
      * @return
      */
     static std::string getBindedStrID(int key);
+    /**
+     * @brief getBindedStrID Возвращает строку, связаную с числом
+     * @param num Треугольное число
+     * @return Строковый идентификатор
+     */
+    static std::string getBindedStrID(const TriangleNumber & num);
 };
 
 #endif

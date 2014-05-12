@@ -2,8 +2,17 @@
 
 QMap<int, valsBind> TriangleNumber::baseBinds;
 
-TriangleNumber::TriangleNumber(double c, double l, double r) :
-    center(c), left(l), right(r) {
+TriangleNumber::TriangleNumber(double c, double l, double r)
+{
+    this->center = c;
+    this->left = l;
+    this->right = r;
+}
+
+TriangleNumber::TriangleNumber(const TriangleNumber &c) {
+    this->center = c.center;
+    this->left = c.left;
+    this->right = c.right;
 }
 
 TriangleNumber::~TriangleNumber() {
@@ -33,8 +42,22 @@ void TriangleNumber::setLeft(double left) {
     this->left = left;
 }
 
+TriangleNumber &TriangleNumber::operator =(const TriangleNumber &r) {
+    if(this != &r) {
+        this->left = r.left;
+        this->right = r.right;
+        this->center = r.center;
+    }
+
+    return *this;
+}
+
 TriangleNumber TriangleNumber::operator+(TriangleNumber &r) {
     return TriangleNumber(this->center + r.center, this->left + r.left, this->right + r.right);
+}
+
+TriangleNumber TriangleNumber::operator -(TriangleNumber &r) {
+    return TriangleNumber(this->center - r.center, this->left - r.left, this->right - r.right);
 }
 
 TriangleNumber& TriangleNumber::operator+=(TriangleNumber &r) {
@@ -86,6 +109,8 @@ void TriangleNumber::addBaseBind(int key, TriangleNumber num, std::string strID)
 TriangleNumber TriangleNumber::getBindedTriangle(int key) {
     TriangleNumber res;
 
+    qDebug() << "Индекс: " << key;
+
     if(baseBinds.contains(key)) {
         res = boost::get<0>(baseBinds[key]);
     }
@@ -103,3 +128,14 @@ std::string TriangleNumber::getBindedStrID(int key) {
     return res;
 }
 
+std::string TriangleNumber::getBindedStrID(const TriangleNumber &num) {
+    QList<int> keyVals = baseBinds.keys();
+
+    foreach (int val, keyVals) {
+        if(boost::get<0>(baseBinds[val]) == num) {
+            return boost::get<1>(baseBinds[val]);
+        }
+    }
+
+    return "";
+}

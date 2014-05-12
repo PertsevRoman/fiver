@@ -1,11 +1,11 @@
 #include <string>
-#include <vector>
 #include <exception>
 using namespace std;
 
 #ifndef __TriangleMathCollector_h__
 #define __TriangleMathCollector_h__
 
+#include <QVector>
 #include "TriangleNumber.h"
 
 class TriangleNumber;
@@ -13,7 +13,7 @@ class TriangleMathCollector;
 
 class TriangleMathCollector
 {
-    std::vector<TriangleNumber> triangles;
+    QVector<TriangleNumber> triangles;
 
 public:
     /**

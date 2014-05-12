@@ -28,10 +28,13 @@ void MainWindow::init() {
 
     opts = new OptionsDialog(this);
     about = new AboutDialog(this);
+    insertDlg = new InsertArticleDialog(this);
 
     progress    = new QProgressBar();
     procInfo    = new QLabel("Инициализация завершена");
     dbInfo      = new QLabel("Соединение с БД не инициализировано");
+
+    oldStackWidget = ui->operationsStack->currentIndex();
 }
 
 void MainWindow::sets() {
@@ -75,6 +78,11 @@ void MainWindow::conn() {
     connect(mysqlDataModel, &DataModel::dbConnectedStatus, this, &MainWindow::dbCheck);
     connect(imageNam, &QNetworkAccessManager::finished, this, &MainWindow::imageLoaded);
     connect(ui->voteValue, &QSlider::valueChanged, this, &MainWindow::voteValChanged);
+    connect(ui->operationsStack, &QStackedWidget::currentChanged, this, &MainWindow::operationChange);
+
+    //Страница редактирования словаря
+    connect(ui->deleteArticle, &QPushButton::released, this, &MainWindow::removeSelectedData);
+    connect(ui->addArticle, &QPushButton::released, this, &MainWindow::appendDataAfterCurrent);
 }
 
 void MainWindow::imageResize() {
@@ -179,5 +187,33 @@ void MainWindow::dbCheck(bool ch) {
 
 void MainWindow::voteValChanged(int val) {
     ui->appendVote->setText(voteDefends[val]);
+}
+
+void MainWindow::operationChange(int val) {
+    if(oldStackWidget == 0) {
+        if(mysqlDataModel->dbLinkIsCorrect()) {
+            mysqlDataModel->refreshMarks();
+        }
+    }
+
+    oldStackWidget = val;
+}
+
+void MainWindow::removeSelectedData() {
+    if(ui->articleList->currentIndex().isValid()) {
+        int res = QMessageBox::warning(this, "Удаление данных", "Уверены, что хотите удалить данные?", QMessageBox::Ok | QMessageBox::Cancel);
+
+        if(res == QMessageBox::Ok) {
+            mysqlDataModel->getMapTableModel()->removeRow(ui->articleList->currentIndex().row());
+            mysqlDataModel->getMapTableModel()->submitAll();
+            mysqlDataModel->getMapTableModel()->select();
+        }
+    }
+}
+
+void MainWindow::appendDataAfterCurrent() {
+    if(ui->articleList->currentIndex().isValid()) {
+        insertDlg->show();
+    }
 }
 

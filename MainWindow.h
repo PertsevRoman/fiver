@@ -18,6 +18,7 @@
 
 #include "optionsdialog.h"
 #include "aboutdialog.h"
+#include "insertarticledialog.h"
 
 #include "codes.h"
 
@@ -47,13 +48,18 @@ class MainWindow : public QMainWindow
     DataModel*          mysqlDataModel;
     DocumentsAnalyser*  docAnalyser;
 
-    OptionsDialog   *opts;
-    AboutDialog     *about;
+    OptionsDialog       *opts;
+    AboutDialog         *about;
+    InsertArticleDialog *insertDlg;
 
+    //Текущие данные для изображения
     std::pair<std::string, std::vector<std::string> > currentImageData;
 
     //Оценки тональности
     QMap<int, QString> voteDefends;
+
+    //Старый виджет стека
+    int oldStackWidget;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -117,6 +123,19 @@ private slots:
      * @param val Значение
      */
     void voteValChanged(int val);
+    /**
+     * @brief operationchange Смена отображаемого виджета
+     * @param val Индекс стекового виджета
+     */
+    void operationChange(int val);
+    /**
+     * @brief removeSelectedData Удаление текущей выделенной строки
+     */
+    void removeSelectedData();
+    /**
+     * @brief appendDataAfterCurrent вставка новой строки
+     */
+    void appendDataAfterCurrent();
 };
 
 #endif

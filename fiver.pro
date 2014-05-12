@@ -23,7 +23,8 @@ SOURCES += \
     DataModel.cpp \
     main.cpp \
     optionsdialog.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    insertarticledialog.cpp
 
 HEADERS  += \
     YandexImageConnector.h \
@@ -37,11 +38,13 @@ HEADERS  += \
     DataModel.h \
     codes.h \
     optionsdialog.h \
-    aboutdialog.h
+    aboutdialog.h \
+    insertarticledialog.h
 
 FORMS    += mainwindow.ui \
     optionsdialog.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    insertarticledialog.ui
 
 CONFIG += c++11
 

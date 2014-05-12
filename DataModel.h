@@ -13,6 +13,7 @@
 #include "MainWindow.h"
 #include "YandexImageConnector.h"
 #include "TriangleNumber.h"
+#include "TriangleMathCollector.h"
 
 #include "codes.h"
 #include "optionsdialog.h"
