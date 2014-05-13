@@ -24,7 +24,8 @@ SOURCES += \
     main.cpp \
     optionsdialog.cpp \
     aboutdialog.cpp \
-    insertarticledialog.cpp
+    insertarticledialog.cpp \
+    changemarkdialog.cpp
 
 HEADERS  += \
     YandexImageConnector.h \
@@ -39,12 +40,14 @@ HEADERS  += \
     codes.h \
     optionsdialog.h \
     aboutdialog.h \
-    insertarticledialog.h
+    insertarticledialog.h \
+    changemarkdialog.h
 
 FORMS    += mainwindow.ui \
     optionsdialog.ui \
     aboutdialog.ui \
-    insertarticledialog.ui
+    insertarticledialog.ui \
+    changemarkdialog.ui
 
 CONFIG += c++11
 

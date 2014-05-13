@@ -249,7 +249,6 @@
       <string>Информационное поле</string>
      </property>
      <addaction name="analyseAction"/>
-     <addaction name="reportAction"/>
     </widget>
     <addaction name="menu_4"/>
     <addaction name="menu_5"/>
@@ -284,7 +283,6 @@
    <addaction name="vocFillAction"/>
    <addaction name="separator"/>
    <addaction name="analyseAction"/>
-   <addaction name="reportAction"/>
    <addaction name="separator"/>
    <addaction name="optionsAction"/>
   </widget>
@@ -335,14 +333,6 @@
    </property>
    <property name="shortcut">
     <string>Alt+Shift+A</string>
-   </property>
-  </action>
-  <action name="reportAction">
-   <property name="text">
-    <string>Создание отчета</string>
-   </property>
-   <property name="shortcut">
-    <string>Alt+Shift+R</string>
    </property>
   </action>
   <action name="optionsAction">

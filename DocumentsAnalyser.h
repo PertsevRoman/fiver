@@ -1,10 +1,10 @@
 #include <string>
-#include <vector>
-#include <exception>
 using namespace std;
 
 #ifndef __DocumentsAnalyser_h__
 #define __DocumentsAnalyser_h__
+
+#include <QVector>
 
 #include "Document.h"
 #include "FileDocument.h"
@@ -12,7 +12,7 @@ using namespace std;
 
 class DocumentsAnalyser
 {
-    std::vector<Document*> unnamed_Document_;
+    QVector<Document*> docCollection;
 
 public:
     /**

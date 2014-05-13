@@ -5,14 +5,18 @@
 #ifndef __Document_h__
 #define __Document_h__
 
-class Document
-{
-private:
+#include <QObject>
+
+class Document : public QObject {
+
+protected:
     std::string uri;
     std::string text;
     std::string docType;
 
 public:
+    explicit Document(QObject *parent = 0);
+    ~Document();
     /**
      * @brief getUri возвращает URI ресурса
      * @return URI

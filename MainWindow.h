@@ -19,6 +19,7 @@
 #include "optionsdialog.h"
 #include "aboutdialog.h"
 #include "insertarticledialog.h"
+#include "changemarkdialog.h"
 
 #include "codes.h"
 
@@ -51,6 +52,7 @@ class MainWindow : public QMainWindow
     OptionsDialog       *opts;
     AboutDialog         *about;
     InsertArticleDialog *insertDlg;
+    ChangeMarkDialog    *changeMarkDlg;
 
     //Текущие данные для изображения
     std::pair<std::string, std::vector<std::string> > currentImageData;
@@ -136,6 +138,10 @@ private slots:
      * @brief appendDataAfterCurrent вставка новой строки
      */
     void appendDataAfterCurrent();
+    /**
+     * @brief changeArticleMark Процедура изменения оценки статьи
+     */
+    void changeVoteMark();
 };
 
 #endif

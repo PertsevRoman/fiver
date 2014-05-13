@@ -122,7 +122,19 @@ TriangleNumber DataModel::getMark(std::string article) {
 }
 
 bool DataModel::articleExists(std::string article) {
-	throw "Not yet implemented";
+    QString request = "SELECT count(*) FROM map WHERE article = \"" + QString::fromStdString(article) + "\"";
+
+    QSqlQuery qu(db);
+    if(qu.exec(request)) {
+        qu.next();
+
+        int res = qu.value(0).toInt();
+
+        return res > 0;
+    } else {
+        emit recieveInfo(Errors::Error, "Не прошел запрос количества вхождений статьи");
+        return false;
+    }
 }
 
 void DataModel::refreshMarks() {
@@ -236,7 +248,7 @@ void DataModel::reconn() {
         //Создание модели
         createModel();
     } else {
-        emit recieveInfo(Errors::Error, "Не удалось получить доступ к БД");
+        emit recieveInfo(Errors::Error, "Не удалось получить доступ к БД: " + db.lastError().databaseText() + ", " + db.lastError().driverText());
     }
 
     emit dbConnectedStatus(dbLinkIsCorrect());

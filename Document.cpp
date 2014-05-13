@@ -6,12 +6,20 @@ using namespace std;
 #include "Document.h"
 #include "DocumentsAnalyser.h"
 
+Document::Document(QObject *parent) : QObject(parent){
+}
+
+Document::~Document() {
+}
+
 std::string Document::getUri() {
-	throw "Not yet implemented";
+    return uri;
 }
 
 void Document::setUri(std::string uri) {
-	throw "Not yet implemented";
+    if(this->uri != uri) {
+        this->uri = uri;
+    }
 }
 
 std::string Document::getText() {
@@ -19,6 +27,6 @@ std::string Document::getText() {
 }
 
 std::string Document::getDocType() {
-	throw "Not yet implemented";
+    return docType;
 }
 

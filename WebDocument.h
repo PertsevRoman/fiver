@@ -10,7 +10,9 @@
 class WebDocument: public Document
 {
 
-private:
+public:
+    explicit Document(QObject *parent = 0);
+    ~Document();
     /**
      * @brief get запрашивает исходник
      */

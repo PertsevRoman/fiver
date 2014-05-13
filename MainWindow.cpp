@@ -29,6 +29,7 @@ void MainWindow::init() {
     opts = new OptionsDialog(this);
     about = new AboutDialog(this);
     insertDlg = new InsertArticleDialog(this);
+    changeMarkDlg = new ChangeMarkDialog(this);
 
     progress    = new QProgressBar();
     procInfo    = new QLabel("Инициализация завершена");
@@ -83,6 +84,7 @@ void MainWindow::conn() {
     //Страница редактирования словаря
     connect(ui->deleteArticle, &QPushButton::released, this, &MainWindow::removeSelectedData);
     connect(ui->addArticle, &QPushButton::released, this, &MainWindow::appendDataAfterCurrent);
+    connect(ui->changeVoteBtn, &QPushButton::released, this, &MainWindow::changeVoteMark);
 }
 
 void MainWindow::imageResize() {
@@ -213,7 +215,37 @@ void MainWindow::removeSelectedData() {
 
 void MainWindow::appendDataAfterCurrent() {
     if(ui->articleList->currentIndex().isValid()) {
-        insertDlg->show();
+        int res = insertDlg->exec();
+
+        if(res == QDialog::Accepted) {
+            QSqlTableModel* mdl = mysqlDataModel->getMapTableModel();
+            int newRowIndex = ui->articleList->currentIndex().row() + 1;
+
+            if(!mysqlDataModel->articleExists(insertDlg->getArticleName().toUpper().toStdString())) {
+                mdl->insertRows(newRowIndex, 1);
+                mdl->setData(mdl->index(newRowIndex, 1), insertDlg->getArticleName().toUpper());
+                mdl->setData(mdl->index(newRowIndex, 2), insertDlg->getArticleDescription());
+                mdl->setData(mdl->index(newRowIndex, 3), QString::fromStdString(TriangleNumber::getBindedStrID(insertDlg->getVote())));
+
+                mdl->submitAll();
+                mdl->select();
+            }
+        }
+    }
+}
+
+void MainWindow::changeVoteMark() {
+    if(ui->articleList->currentIndex().isValid()) {
+        int res = changeMarkDlg->exec();
+
+        if(res == QDialog::Accepted) {
+            QSqlTableModel* mdl = mysqlDataModel->getMapTableModel();
+            int rowIndex = ui->articleList->currentIndex().row();
+
+            mdl->setData(mdl->index(rowIndex, 3), QString::fromStdString(TriangleNumber::getBindedStrID(changeMarkDlg->getVoteMark())));
+            mdl->submitAll();
+            mdl->select();
+        }
     }
 }
 

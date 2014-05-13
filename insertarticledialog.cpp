@@ -15,6 +15,18 @@ InsertArticleDialog::~InsertArticleDialog() {
     delete ui;
 }
 
+QString InsertArticleDialog::getArticleName() {
+    return ui->articleName->text();
+}
+
+QString InsertArticleDialog::getArticleDescription() {
+    return ui->description->toPlainText();
+}
+
+int InsertArticleDialog::getVote() {
+    return ui->voteValue->value();
+}
+
 void InsertArticleDialog::init() {
 }
 

@@ -19,6 +19,10 @@ public:
     explicit InsertArticleDialog(QWidget *parent = 0);
     ~InsertArticleDialog();
 
+    QString getArticleName();
+    QString getArticleDescription();
+    int getVote();
+
 private:
     Ui::InsertArticleDialog *ui;
 

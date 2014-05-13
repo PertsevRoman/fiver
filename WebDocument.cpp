@@ -6,6 +6,12 @@ using namespace std;
 #include "WebDocument.h"
 #include "Document.h"
 
+WebDocument::Document(QObject *parent) {
+}
+
+WebDocument::~Document() {
+}
+
 void WebDocument::get() {
 	throw "Not yet implemented";
 }
