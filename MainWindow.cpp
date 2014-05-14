@@ -30,12 +30,15 @@ void MainWindow::init() {
     about = new AboutDialog(this);
     insertDlg = new InsertArticleDialog(this);
     changeMarkDlg = new ChangeMarkDialog(this);
+    appendUriDlg = new AppendUriDialog(this);
 
     progress    = new QProgressBar();
     procInfo    = new QLabel("Инициализация завершена");
     dbInfo      = new QLabel("Соединение с БД не инициализировано");
 
     oldStackWidget = ui->operationsStack->currentIndex();
+
+    docAnalyser = new DocumentsAnalyser(this);
 }
 
 void MainWindow::sets() {
@@ -57,6 +60,10 @@ void MainWindow::sets() {
     voteDefends[4] = "Сильно положительное";
 
     ui->appendVote->setText(voteDefends[0]);
+
+    SpinBoxDelegate *delegate = new SpinBoxDelegate(ui->resourceList);
+    ui->resourceList->setItemDelegateForColumn(1, delegate);
+    ui->resourceList->setModel(docAnalyser->getResourseListModel());
 }
 
 void MainWindow::conn() {
@@ -85,6 +92,10 @@ void MainWindow::conn() {
     connect(ui->deleteArticle, &QPushButton::released, this, &MainWindow::removeSelectedData);
     connect(ui->addArticle, &QPushButton::released, this, &MainWindow::appendDataAfterCurrent);
     connect(ui->changeVoteBtn, &QPushButton::released, this, &MainWindow::changeVoteMark);
+
+    //Страница анализа данных
+    connect(ui->appendResource, &QPushButton::released, this, &MainWindow::appendNewUri);
+    connect(ui->deleteResource, &QPushButton::released, this, &MainWindow::removeResourseRow);
 }
 
 void MainWindow::imageResize() {
@@ -247,5 +258,24 @@ void MainWindow::changeVoteMark() {
             mdl->select();
         }
     }
+}
+
+void MainWindow::appendNewUri() {
+    appendUriDlg->clear();
+    int res = appendUriDlg->exec();
+
+    if(res == QDialog::Accepted) {
+        if(!docAnalyser->add(appendUriDlg->getUri().toStdString(), appendUriDlg->getExpertMark())) {
+            QMessageBox::critical(this, "Ошибка", "Данная строка не может быть классифицирована как URL");
+        }
+    }
+}
+
+void MainWindow::removeResourseRow() {
+    if(QMessageBox::Ok == QMessageBox::information(this, "Подтверждение",
+        "Вы действительно хотите удалить эту строку?", QMessageBox::Ok | QMessageBox::Cancel)) {
+        docAnalyser->removeRow(ui->resourceList->currentIndex().row());
+    }
+
 }
 

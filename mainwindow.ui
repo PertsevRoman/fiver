@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>710</width>
-    <height>323</height>
+    <width>841</width>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <item row="0" column="0">
        <widget class="QStackedWidget" name="operationsStack">
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="fillPage">
          <layout class="QGridLayout" name="gridLayout_4">
@@ -123,7 +123,7 @@
                 </spacer>
                </item>
                <item row="0" column="0" rowspan="3">
-                <widget class="QTableWidget" name="resourceList"/>
+                <widget class="QTableView" name="resourceList"/>
                </item>
               </layout>
              </widget>
@@ -223,7 +223,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>710</width>
+     <width>841</width>
      <height>18</height>
     </rect>
    </property>

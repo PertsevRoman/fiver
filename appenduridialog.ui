@@ -1,55 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ChangeMarkDialog</class>
- <widget class="QDialog" name="ChangeMarkDialog">
+ <class>AppendUriDialog</class>
+ <widget class="QDialog" name="AppendUriDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
-    <height>67</height>
+    <width>561</width>
+    <height>71</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Изменить оценку</string>
+   <string>Добавить URI</string>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QSlider" name="voteValue">
-       <property name="minimum">
-        <number>-4</number>
-       </property>
-       <property name="maximum">
-        <number>4</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="voteLabel">
-       <property name="minimumSize">
-        <size>
-         <width>250</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
@@ -60,6 +27,34 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="uri"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>URL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Экспертная оценка</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QSpinBox" name="expertMark">
+       <property name="maximum">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <resources/>
@@ -67,7 +62,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>ChangeMarkDialog</receiver>
+   <receiver>AppendUriDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -83,7 +78,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>ChangeMarkDialog</receiver>
+   <receiver>AppendUriDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -25,7 +25,9 @@ SOURCES += \
     optionsdialog.cpp \
     aboutdialog.cpp \
     insertarticledialog.cpp \
-    changemarkdialog.cpp
+    changemarkdialog.cpp \
+    appenduridialog.cpp \
+    spinboxdelegate.cpp
 
 HEADERS  += \
     YandexImageConnector.h \
@@ -41,13 +43,17 @@ HEADERS  += \
     optionsdialog.h \
     aboutdialog.h \
     insertarticledialog.h \
-    changemarkdialog.h
+    changemarkdialog.h \
+    appenduridialog.h \
+    spinboxdelegate.h \
+    documenterrors.h
 
 FORMS    += mainwindow.ui \
     optionsdialog.ui \
     aboutdialog.ui \
     insertarticledialog.ui \
-    changemarkdialog.ui
+    changemarkdialog.ui \
+    appenduridialog.ui
 
 CONFIG += c++11
 
@@ -95,4 +101,9 @@ unix:!macx {
 
     INCLUDEPATH += $$PWD/../../../../../Programming/o2scl/include
     DEPENDPATH += $$PWD/../../../../../Programming/o2scl/include
+
+    LIBS += -L$$PWD/../../../../../Programming/RussianGrammaticalDictionary/lib/ -lSolarix_Grammar_Engine
+
+    INCLUDEPATH += $$PWD/../../../../../Programming/RussianGrammaticalDictionary/include
+    DEPENDPATH += $$PWD/../../../../../Programming/RussianGrammaticalDictionary/include
 }

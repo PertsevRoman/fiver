@@ -12,6 +12,7 @@
 #include <QImageReader>
 #include <QProgressBar>
 #include <QLabel>
+#include <QSpinBox>
 
 #include "DataModel.h"
 #include "DocumentsAnalyser.h"
@@ -20,7 +21,9 @@
 #include "aboutdialog.h"
 #include "insertarticledialog.h"
 #include "changemarkdialog.h"
+#include "appenduridialog.h"
 
+#include "spinboxdelegate.h"
 #include "codes.h"
 
 class DataModel;
@@ -53,6 +56,7 @@ class MainWindow : public QMainWindow
     AboutDialog         *about;
     InsertArticleDialog *insertDlg;
     ChangeMarkDialog    *changeMarkDlg;
+    AppendUriDialog     *appendUriDlg;
 
     //Текущие данные для изображения
     std::pair<std::string, std::vector<std::string> > currentImageData;
@@ -142,6 +146,14 @@ private slots:
      * @brief changeArticleMark Процедура изменения оценки статьи
      */
     void changeVoteMark();
+    /**
+     * @brief addNewUri Процедура добавления нового URI
+     */
+    void appendNewUri();
+    /**
+     * @brief removeResourseRow Процедура удаления строки
+     */
+    void removeResourseRow();
 };
 
 #endif

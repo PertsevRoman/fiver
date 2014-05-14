@@ -1,15 +1,22 @@
-#include <string>
-#include <vector>
-#include <exception>
-using namespace std;
-
 #include "Document.h"
-#include "DocumentsAnalyser.h"
 
-Document::Document(QObject *parent) : QObject(parent){
+Document::Document(QObject *parent) : QObject(parent) {
+    init();
 }
 
 Document::~Document() {
+}
+
+DocumentState::ProcessingState Document::getState() const {
+    return state;
+}
+
+void Document::setState(const DocumentState::ProcessingState &value) {
+    state = value;
+}
+
+void Document::init() {
+    state = DocumentState::NoError;
 }
 
 std::string Document::getUri() {
@@ -23,7 +30,7 @@ void Document::setUri(std::string uri) {
 }
 
 std::string Document::getText() {
-	throw "Not yet implemented";
+    return text;
 }
 
 std::string Document::getDocType() {

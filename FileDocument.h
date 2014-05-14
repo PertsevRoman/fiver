@@ -10,6 +10,11 @@ using namespace std;
 
 class FileDocument: public Document
 {
+    Q_OBJECT
+
+public:
+    FileDocument(QObject *parent = 0);
+    ~FileDocument();
 };
 
 #endif

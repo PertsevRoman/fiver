@@ -7,12 +7,19 @@
 
 #include <QObject>
 
+#include <boost/regex.hpp>
+
+#include "documenterrors.h"
+
 class Document : public QObject {
+    Q_OBJECT
 
 protected:
     std::string uri;
     std::string text;
     std::string docType;
+
+    DocumentState::ProcessingState state;
 
 public:
     explicit Document(QObject *parent = 0);
@@ -37,6 +44,15 @@ public:
      * @return тип документа
      */
     std::string getDocType();
+
+    //GET и SET методы для установки и получения значения состояния документа
+    DocumentState::ProcessingState getState() const;
+    void setState(const DocumentState::ProcessingState &value);
+
+protected:
+    virtual void init();
+    virtual void sets() = 0;
+    virtual void conn() = 0;
 };
 
 #endif

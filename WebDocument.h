@@ -5,14 +5,24 @@
 #ifndef __WebDocument_h__
 #define __WebDocument_h__
 
+#include <QtNetwork>
+
 #include "Document.h"
 
 class WebDocument: public Document
 {
+    Q_OBJECT
+
+    //Кэш страницы
+    std::string cache;
+
+    //Менеджер соединения
+    QNetworkAccessManager* man;
 
 public:
-    explicit Document(QObject *parent = 0);
-    ~Document();
+    explicit WebDocument(QObject *parent = 0);
+    ~WebDocument();
+
     /**
      * @brief get запрашивает исходник
      */
@@ -20,7 +30,12 @@ public:
     /**
      * @brief parse парсит исходник
      */
-    void parse();
+    void parse(QNetworkReply *reply);
+
+private:
+    void init();
+    void sets();
+    void conn();
 };
 
 #endif
