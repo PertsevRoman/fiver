@@ -7,6 +7,8 @@
 
 #include <QtNetwork>
 
+//#include <lem/solarix/solarix_grammar_engine.h>
+
 #include "Document.h"
 
 class WebDocument: public Document
@@ -31,6 +33,7 @@ public:
      * @brief parse парсит исходник
      */
     void parse(QNetworkReply *reply);
+    void prepareText();
 
 private:
     void init();

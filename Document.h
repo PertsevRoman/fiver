@@ -44,6 +44,10 @@ public:
      * @return тип документа
      */
     std::string getDocType();
+    /**
+     * @brief prepareText Выполняет подготовку текста для синтаксического разбора
+     */
+    virtual void prepareText() = 0;
 
     //GET и SET методы для установки и получения значения состояния документа
     DocumentState::ProcessingState getState() const;

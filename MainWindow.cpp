@@ -276,6 +276,5 @@ void MainWindow::removeResourseRow() {
         "Вы действительно хотите удалить эту строку?", QMessageBox::Ok | QMessageBox::Cancel)) {
         docAnalyser->removeRow(ui->resourceList->currentIndex().row());
     }
-
 }
 

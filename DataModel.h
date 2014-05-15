@@ -20,6 +20,8 @@
 
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
 class MainWindow;
 
@@ -41,6 +43,9 @@ class DataModel : public QObject
     QString username;
     QString pass;
     QString dbName;
+
+    //Рандомайзер
+    boost::random::mt19937 rng;
 
 public:
     //Конструктор, деструктор

@@ -12,12 +12,18 @@ WebDocument::~WebDocument() {
 }
 
 void WebDocument::get() {
-	throw "Not yet implemented";
+    QUrl url(QString::fromStdString(uri));
+    man->get(QNetworkRequest(url));
 }
 
 void WebDocument::parse(QNetworkReply *reply) {
     if(reply->error() != QNetworkReply::NoError) {
+    } else {
     }
+}
+
+void WebDocument::prepareText() {
+    void get();
 }
 
 void WebDocument::init() {

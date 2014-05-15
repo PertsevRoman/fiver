@@ -27,20 +27,36 @@ QString DataModel::getNextRandomTag() {
         emit recieveInfo(Errors::NoError, "Запрос тега");
 
         if(db.driver()->hasFeature(QSqlDriver::Transactions)) {
+            qDebug() << "Начало транзакции";
             db.transaction();
         }
 
+        mx.lock();
+
         QSqlQuery query(db);
-        if(query.exec("SELECT article FROM map ORDER BY RAND() LIMIT 1")) {
+        if(query.exec("SELECT COUNT(*) FROM map")) {
             query.next();
-            res = query.value(0).toString();
+            int rowCount = query.value(0).toInt();
+
+            boost::random::uniform_int_distribution<> limits(1, rowCount);
+            int randRow = limits(rng);
+
+            if(query.exec("SELECT article FROM map LIMIT " + QString("%1").arg(randRow) + ", 1;")) {
+                query.next();
+                res = query.value(0).toString();
+            } else {
+                emit recieveInfo(Errors::Error, "Не удалось запросить тег");
+            }
         } else {
-            emit recieveInfo(Errors::Error, "Не удалось запросить тег");
+            emit recieveInfo(Errors::Error, "Не удалось запросить количество записей");
         }
 
         if(db.driver()->hasFeature(QSqlDriver::Transactions)) {
+            qDebug() << "Конец транзакции";
             db.commit();
         }
+
+        mx.unlock();
 
         emit recieveInfo(Errors::NoError, "Тег запрошен");
     } else {
@@ -85,6 +101,7 @@ void DataModel::appendMark() {
         mx.lock();
 
         if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+            qDebug() << "Начало транзакции";
             cloned.transaction();
         }
 
@@ -106,6 +123,7 @@ void DataModel::appendMark() {
         }
 
         if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+            qDebug() << "Конец транзакции";
             cloned.commit();
         }
 
@@ -153,6 +171,7 @@ void DataModel::refreshMarks() {
                 QString(" (select distinct(article_id) FROM marks.votes) group by article_id;");
 
         if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+            qDebug() << "Начало транзакции";
             cloned.transaction();
         }
 
@@ -199,6 +218,7 @@ void DataModel::refreshMarks() {
         }
 
         if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+            qDebug() << "Конец транзакции";
             cloned.commit();
         }
 
