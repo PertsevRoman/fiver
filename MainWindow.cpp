@@ -78,6 +78,8 @@ void MainWindow::conn() {
     //Диалог и модель данных
     connect(opts, &OptionsDialog::accepted, mysqlDataModel, &DataModel::optionsAccepted);
     connect(opts, &OptionsDialog::rejected, mysqlDataModel, &DataModel::optionsRejected);
+    //Диалог и анализатор
+    connect(opts, &OptionsDialog::accepted, docAnalyser, &DocumentsAnalyser::optionsAccepted);
 
     //Диалог "О программе.."
     connect(ui->aboutAction, &QAction::triggered, about, &AboutDialog::show);
@@ -98,6 +100,7 @@ void MainWindow::conn() {
     //Страница анализа данных
     connect(ui->appendResource, &QPushButton::released, this, &MainWindow::appendNewUri);
     connect(ui->deleteResource, &QPushButton::released, this, &MainWindow::removeResourseRow);
+    connect(ui->analyse, &QPushButton::released, docAnalyser, &DocumentsAnalyser::analyse);
 }
 
 void MainWindow::imageResize() {

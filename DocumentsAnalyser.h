@@ -15,7 +15,12 @@ using namespace std;
 #include "FileDocument.h"
 #include "WebDocument.h"
 
+#include "optionsdialog.h"
+
 #include <boost/regex.hpp>
+#include <boost/thread/mutex.hpp>
+
+#include <lem/solarix/solarix_grammar_engine.h>
 
 class DocumentsAnalyser : public QObject
 {
@@ -27,6 +32,13 @@ class DocumentsAnalyser : public QObject
     //Модель данных
     QStandardItemModel *model;
 
+    //Движок
+    QString enginiePath;
+    HGREN hEngine;
+
+    //Мютекс
+    boost::mutex mx;
+
 public:
     explicit DocumentsAnalyser(QObject *parent = 0);
     ~DocumentsAnalyser();
@@ -36,10 +48,6 @@ public:
      * @param uri URI ресурса
      */
     bool add(std::string uri, int mark);
-    /**
-     * @brief analyse Анализ данных
-     */
-    void analyse();
 
     //GET и SET метода для модели
     QStandardItemModel *getResourseListModel() const;
@@ -50,10 +58,33 @@ public:
      */
     void removeRow(int row);
 
+public slots:
+    /**
+     * @brief analyse Анализ данных
+     */
+    void analyse();
+    /**
+     * @brief setGrammaEnginiePath Устанавливает путь для файла словаря
+     * @param path
+     */
+    void setGrammaEnginiePath(QString path);
+    /**
+     * @brief optionsAccepted Добавление опций
+     */
+    void optionsAccepted();
+
 private:
     void init();
     void sets();
     void conn();
+
+    void reloadGrammaEngine();
+
+private slots:
+    /**
+     * @brief docTextPrepared Документ закончил подготовку текста
+     */
+    void docTextPrepared();
 };
 
 #endif

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network sql
+QT += core gui network sql xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -82,6 +82,11 @@ unix:!macx {
 
     INCLUDEPATH += $$PWD/../../../../opt/gsl/include
     DEPENDPATH += $$PWD/../../../../opt/gsl/include
+
+    LIBS += -L$$PWD/../../../../opt/solarix/lib/ -lgren -lcrfsuite -lcqdb -llbfgs
+
+    INCLUDEPATH += $$PWD/../../../../opt/solarix/include
+    DEPENDPATH += $$PWD/../../../../opt/solarix/include
 } else:win32 {
     CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Programming/boost/lib/ -lboost_system-mgw48-1_55 -lboost_system-mgw48-mt-1_55 -lboost_thread-mgw48-mt-1_55 -lboost_regex-mgw48-1_55
     else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Programming/boost/lib/ -lboost_system-mgw48-d-1_55 -lboost_system-mgw48-mt-d-1_55 -lboost_thread-mgw48-mt-d-1_55 -lboost_regex-mgw48-d-1_55
@@ -109,3 +114,5 @@ unix:!macx {
     INCLUDEPATH += $$PWD/../../../../../Programming/RussianGrammaticalDictionary/include
     DEPENDPATH += $$PWD/../../../../../Programming/RussianGrammaticalDictionary/include
 }
+
+

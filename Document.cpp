@@ -29,6 +29,14 @@ void Document::setUri(std::string uri) {
     }
 }
 
+void Document::setGrammarEngine(const HFAIND &engine) {
+    this->hEngine = engine;
+}
+
+HGREN Document::getGrammarEngine() const {
+    return hEngine;
+}
+
 std::string Document::getText() {
     return text;
 }

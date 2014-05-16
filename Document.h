@@ -9,6 +9,8 @@
 
 #include <boost/regex.hpp>
 
+#include <lem/solarix/solarix_grammar_engine.h>
+
 #include "documenterrors.h"
 
 class Document : public QObject {
@@ -20,6 +22,9 @@ protected:
     std::string docType;
 
     DocumentState::ProcessingState state;
+
+    //Движок словаря
+    HGREN hEngine;
 
 public:
     explicit Document(QObject *parent = 0);
@@ -52,6 +57,9 @@ public:
     //GET и SET методы для установки и получения значения состояния документа
     DocumentState::ProcessingState getState() const;
     void setState(const DocumentState::ProcessingState &value);
+
+    HGREN getGrammarEngine() const;
+    void setGrammarEngine(const HGREN &engine);
 
 protected:
     virtual void init();

@@ -6,8 +6,7 @@
 #define __WebDocument_h__
 
 #include <QtNetwork>
-
-#include <lem/solarix/solarix_grammar_engine.h>
+#include <QtXml>
 
 #include <boost/thread.hpp>
 
@@ -18,13 +17,10 @@ class WebDocument: public Document
     Q_OBJECT
 
     //Кэш страницы
-    QString cache;
+    QVector<QString> cache;
 
     //Менеджер соединения
     QNetworkAccessManager* man;
-
-    //Движок словаря
-    HGREN hEngine;
 
 public:
     explicit WebDocument(QObject *parent = 0);
@@ -39,9 +35,6 @@ public:
      */
     void parse(QNetworkReply *reply);
     void prepareText();
-
-    HGREN getGrammarEngine() const;
-    void setGrammarEngine(const HGREN &engine);
 
 private:
     void init();

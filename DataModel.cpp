@@ -295,6 +295,8 @@ void DataModel::reconn() {
 }
 
 void DataModel::optionsAccepted() {
+    mx.lock();
+
     OptionsDialog* dlg = qobject_cast<OptionsDialog*>(sender());
 
     setHost(dlg->getHost());
@@ -308,6 +310,8 @@ void DataModel::optionsAccepted() {
     if(mainWindow) {
         mainWindow->stateChanged();
     }
+
+    mx.unlock();
 }
 
 void DataModel::optionsRejected() {
