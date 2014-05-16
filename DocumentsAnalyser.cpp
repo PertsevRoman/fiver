@@ -24,6 +24,7 @@ bool DocumentsAnalyser::add(std::string uri, int mark) {
     rowVals.append(markItm);
     rowVals.append(new QStandardItem());
     rowVals.append(new QStandardItem());
+    rowVals.append(new QStandardItem());
 
     model->appendRow(rowVals);
 
@@ -47,12 +48,12 @@ void DocumentsAnalyser::removeRow(int row) {
 }
 
 void DocumentsAnalyser::init() {
-    model = new QStandardItemModel(0, 4, this);
+    model = new QStandardItemModel(0, 5, this);
 }
 
 void DocumentsAnalyser::sets() {
     QStringList headers;
-    headers << "URL" << "Экспертная оценка" << "PR/ТИЦ" << "Оценка";
+    headers << "URL" << "Экспертная оценка" << "PR/ТИЦ" << "Прогресс" << "Оценка";
 
     model->setHorizontalHeaderLabels(headers);
 }

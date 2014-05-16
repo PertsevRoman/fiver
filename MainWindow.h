@@ -24,6 +24,8 @@
 #include "appenduridialog.h"
 
 #include "spinboxdelegate.h"
+#include "progressbardelegate.h"
+
 #include "codes.h"
 
 class DataModel;

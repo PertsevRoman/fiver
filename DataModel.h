@@ -22,6 +22,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/variate_generator.hpp>
 
 class MainWindow;
 
@@ -44,8 +45,8 @@ class DataModel : public QObject
     QString pass;
     QString dbName;
 
-    //Рандомайзер
-    boost::random::mt19937 rng;
+    //Количество строк в словаре
+    int mapRowCount;
 
 public:
     //Конструктор, деструктор
@@ -93,7 +94,7 @@ public:
      * @brief getNextTag Возвращает следующий тег из БД
      * @return тег
      */
-    QString getNextRandomTag();
+    void getNextRandomTag();
     /**
      * @brief dbLinkIsCorrect проверка базы данных
      * @return true если соединение с БД корректно, иначе false
@@ -120,6 +121,8 @@ public:
     QSqlTableModel *getMapTableModel() const;
     void setSqlModel(QSqlTableModel *value);
 
+    int getMapRowCount() const;
+    void setMapRowCount(int value);
 
 public slots:
     /**
@@ -149,6 +152,11 @@ public slots:
     void loadImageInfoLoop(bool isLoaded);
 
 private slots:
+    /**
+     * @brief onTagLoaded Вызывается при загрузке тега
+     * @param tag
+     */
+    void onTagLoaded(QString tag);
 
 signals:
     /**
@@ -164,6 +172,11 @@ signals:
      * @return true если соединение с БД установлено и корректно, иначе false
      */
     void dbConnectedStatus(bool);
+    /**
+     * @brief loadThisTagm Просит загрузить тег
+     * @param tag Тег
+     */
+    void loadThisTag(QString tag);
 
 private:
     void init();
@@ -173,6 +186,8 @@ private:
     void connMainWindow();
 
     void createModel();
+
+    void rebuildLimitsDistribution();
 };
 
 #endif

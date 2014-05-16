@@ -1,6 +1,16 @@
 #include "DataModel.h"
 #include "TriangleNumber.h"
 
+
+int DataModel::getMapRowCount() const
+{
+    return mapRowCount;
+}
+
+void DataModel::setMapRowCount(int value)
+{
+    mapRowCount = value;
+}
 DataModel::DataModel(QObject *parent) : QObject(parent) {
     init();
     sets();
@@ -20,50 +30,51 @@ void DataModel::setMainWindow(MainWindow *value) {
     connMainWindow();
 }
 
-QString DataModel::getNextRandomTag() {
-    QString res = "";
+void DataModel::getNextRandomTag() {
+    boost::thread *th = new boost::thread([this](){
+        QSqlDatabase cloned = QSqlDatabase::cloneDatabase(db, "CLONED_CONNECT3");
+        cloned.open();
 
-    if(dbLinkIsCorrect()) {
-        emit recieveInfo(Errors::NoError, "Запрос тега");
+        if(dbLinkIsCorrect()) {
+            emit recieveInfo(Errors::NoError, "Запрос тега");
 
-        if(db.driver()->hasFeature(QSqlDriver::Transactions)) {
-            qDebug() << "Начало транзакции";
-            db.transaction();
-        }
+            if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+                qDebug() << "Начало транзакции";
+                cloned.transaction();
+            }
 
-        mx.lock();
+            mx.lock();
 
-        QSqlQuery query(db);
-        if(query.exec("SELECT COUNT(*) FROM map")) {
-            query.next();
-            int rowCount = query.value(0).toInt();
+            srand(time(0));
+            int randRow = (int) (((double)rand()) / ((double)RAND_MAX) * mapRowCount);
 
-            boost::random::uniform_int_distribution<> limits(1, rowCount);
-            int randRow = limits(rng);
-
+            QSqlQuery query(cloned);
             if(query.exec("SELECT article FROM map LIMIT " + QString("%1").arg(randRow) + ", 1;")) {
                 query.next();
-                res = query.value(0).toString();
+                emit loadThisTag(query.value(0).toString());
             } else {
                 emit recieveInfo(Errors::Error, "Не удалось запросить тег");
             }
+
+            if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
+                qDebug() << "Конец транзакции";
+                cloned.commit();
+            }
+
+            query.clear();
+
+            mx.unlock();
+
+            emit recieveInfo(Errors::NoError, "Тег запрошен");
         } else {
-            emit recieveInfo(Errors::Error, "Не удалось запросить количество записей");
+            emit recieveInfo(Errors::Error, "При запросе тега определена некорректность соединения с БД");
         }
 
-        if(db.driver()->hasFeature(QSqlDriver::Transactions)) {
-            qDebug() << "Конец транзакции";
-            db.commit();
-        }
+        cloned.close();
+        db.removeDatabase("CLONED_CONNECT3");
+    });
 
-        mx.unlock();
-
-        emit recieveInfo(Errors::NoError, "Тег запрошен");
-    } else {
-        emit recieveInfo(Errors::Error, "При запросе тега определена некорректность соединения с БД");
-    }
-
-    return res;
+    th->detach();
 }
 
 bool DataModel::dbLinkIsCorrect() {
@@ -96,6 +107,8 @@ void DataModel::appendMark() {
             }
         }
 
+        queryIDS.clear();
+
         articles += "\"";
 
         mx.lock();
@@ -122,6 +135,8 @@ void DataModel::appendMark() {
             qDebug() << "Последний запрос: " << queryInsert.lastQuery();
         }
 
+        queryInsert.clear();
+
         if(cloned.driver()->hasFeature(QSqlDriver::Transactions)) {
             qDebug() << "Конец транзакции";
             cloned.commit();
@@ -130,6 +145,7 @@ void DataModel::appendMark() {
         mx.unlock();
 
         cloned.close();
+        db.removeDatabase("CLONED_CONNECT");
     });
 
     th->detach();
@@ -223,6 +239,7 @@ void DataModel::refreshMarks() {
         }
 
         cloned.close();
+        rebuildLimitsDistribution();
         emit recieveInfo(Errors::NoError, "Обновление оценок завершено");
     });
 
@@ -271,6 +288,9 @@ void DataModel::reconn() {
         emit recieveInfo(Errors::Error, "Не удалось получить доступ к БД: " + db.lastError().databaseText() + ", " + db.lastError().driverText());
     }
 
+    //Установка лимитов
+    rebuildLimitsDistribution();
+
     emit dbConnectedStatus(dbLinkIsCorrect());
 }
 
@@ -304,8 +324,13 @@ void DataModel::optionsRejected() {
 
 void DataModel::loadImageInfoLoop(bool isLoaded) {
     if(!isLoaded) {
-        imageConnector->request(getNextRandomTag().toLower().toStdString());
+        getNextRandomTag();
+//        imageConnector->request(getNextRandomTag().toLower().toStdString());
     }
+}
+
+void DataModel::onTagLoaded(QString tag) {
+    imageConnector->request(tag.toLower().toStdString());
 }
 
 void DataModel::init() {
@@ -314,11 +339,13 @@ void DataModel::init() {
 }
 
 void DataModel::sets() {
+    srand(time(NULL));
 }
 
 void DataModel::conn() {
     connect(imageConnector, &YandexImageConnector::finished, this, &DataModel::onImageInfoLoaded);
     connect(imageConnector, &YandexImageConnector::infoLoadedCorrectly, this, &DataModel::loadImageInfoLoop);
+    connect(this, &DataModel::loadThisTag, this, &DataModel::onTagLoaded);
 }
 
 void DataModel::connMainWindow() {
@@ -384,4 +411,19 @@ void DataModel::createModel() {
     sqlModel->setHeaderData(1, Qt::Horizontal, "Имя статьи");
     sqlModel->setHeaderData(2, Qt::Horizontal, "Определение");
     sqlModel->setHeaderData(3, Qt::Horizontal, "Оценка тональности");
+}
+
+void DataModel::rebuildLimitsDistribution() {
+    if(dbLinkIsCorrect()) {
+        QSqlQuery query(db);
+        db.transaction();
+        if(query.exec("SELECT COUNT(*) FROM map")) {
+            query.next();
+
+            setMapRowCount(query.value(0).toInt());
+            db.commit();
+        } else {
+            db.rollback();
+        }
+    }
 }

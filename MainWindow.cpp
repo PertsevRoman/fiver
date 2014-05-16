@@ -61,8 +61,10 @@ void MainWindow::sets() {
 
     ui->appendVote->setText(voteDefends[0]);
 
-    SpinBoxDelegate *delegate = new SpinBoxDelegate(ui->resourceList);
-    ui->resourceList->setItemDelegateForColumn(1, delegate);
+    SpinBoxDelegate *spinDelegate = new SpinBoxDelegate(ui->resourceList);
+    ui->resourceList->setItemDelegateForColumn(1, spinDelegate);
+    ProgressBarDelegate *progressDelegate = new ProgressBarDelegate(ui->resourceList);
+    ui->resourceList->setItemDelegateForColumn(3, progressDelegate);
     ui->resourceList->setModel(docAnalyser->getResourseListModel());
 }
 
@@ -205,6 +207,7 @@ void MainWindow::voteValChanged(int val) {
 void MainWindow::operationChange(int val) {
     if(oldStackWidget == 0) {
         if(mysqlDataModel->dbLinkIsCorrect()) {
+            qDebug() << "Вызов обновления";
             mysqlDataModel->refreshMarks();
         }
     }
@@ -220,6 +223,7 @@ void MainWindow::removeSelectedData() {
             mysqlDataModel->getMapTableModel()->removeRow(ui->articleList->currentIndex().row());
             mysqlDataModel->getMapTableModel()->submitAll();
             mysqlDataModel->getMapTableModel()->select();
+            mysqlDataModel->setMapRowCount(mysqlDataModel->getMapRowCount() - 1);
         }
     }
 }
