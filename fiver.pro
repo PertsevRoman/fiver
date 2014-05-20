@@ -28,7 +28,8 @@ SOURCES += \
     changemarkdialog.cpp \
     appenduridialog.cpp \
     spinboxdelegate.cpp \
-    progressbardelegate.cpp
+    progressbardelegate.cpp \
+    categorymaster.cpp
 
 HEADERS  += \
     YandexImageConnector.h \
@@ -48,7 +49,8 @@ HEADERS  += \
     appenduridialog.h \
     spinboxdelegate.h \
     documenterrors.h \
-    progressbardelegate.h
+    progressbardelegate.h \
+    categorymaster.h
 
 FORMS    += mainwindow.ui \
     optionsdialog.ui \

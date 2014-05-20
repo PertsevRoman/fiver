@@ -3,7 +3,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow) {
+    ui(new Ui::MainWindow),
+    CategoryMaster() {
     ui->setupUi(this);
 
     init();
@@ -48,24 +49,25 @@ void MainWindow::sets() {
 
     mysqlDataModel->setMainWindow(this);
 
-    //Инициализация меток
-    voteDefends[-4] = "Сильно негативное";
-    voteDefends[-3] = "Средне негативное";
-    voteDefends[-2] = "Слегка негативное";
-    voteDefends[-1] = "Негативное, близкое к нейтральному";
-    voteDefends[0] = "Нейтральное";
-    voteDefends[1] = "Положительное, близкое к нейтральному";
-    voteDefends[2] = "Слегка положительное";
-    voteDefends[3] = "Средне положительное";
-    voteDefends[4] = "Сильно положительное";
-
     ui->appendVote->setText(voteDefends[0]);
+
+    docAnalyser->setDBModel(mysqlDataModel);
 
     SpinBoxDelegate *spinDelegate = new SpinBoxDelegate(ui->resourceList);
     ui->resourceList->setItemDelegateForColumn(1, spinDelegate);
     ProgressBarDelegate *progressDelegate = new ProgressBarDelegate(ui->resourceList);
     ui->resourceList->setItemDelegateForColumn(3, progressDelegate);
     ui->resourceList->setModel(docAnalyser->getResourseListModel());
+
+    ui->resourceList->setColumnWidth(0, 300);
+    ui->resourceList->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
+    ui->resourceList->setColumnWidth(1, 150);
+    ui->resourceList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
+    ui->resourceList->setColumnWidth(2, 100);
+    ui->resourceList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
+    ui->resourceList->setColumnWidth(4, 200);
+    ui->resourceList->horizontalHeader()->setSectionResizeMode(5, QHeaderView::Fixed);
+    ui->resourceList->setColumnWidth(5, 300);
 }
 
 void MainWindow::conn() {
@@ -74,6 +76,7 @@ void MainWindow::conn() {
     connect(ui->vocFillAction, &QAction::triggered, this, &MainWindow::vocActionPerformed);
     connect(ui->analyseAction, &QAction::triggered, this, &MainWindow::toneActionPerformed);
     connect(ui->optionsAction, &QAction::triggered, opts, &OptionsDialog::show);
+    connect(ui->docAction, &QAction::triggered, this, &MainWindow::openHelp);
 
     //Диалог и модель данных
     connect(opts, &OptionsDialog::accepted, mysqlDataModel, &DataModel::optionsAccepted);
@@ -101,6 +104,8 @@ void MainWindow::conn() {
     connect(ui->appendResource, &QPushButton::released, this, &MainWindow::appendNewUri);
     connect(ui->deleteResource, &QPushButton::released, this, &MainWindow::removeResourseRow);
     connect(ui->analyse, &QPushButton::released, docAnalyser, &DocumentsAnalyser::analyse);
+    connect(docAnalyser, &DocumentsAnalyser::error, this, &MainWindow::recieveError);
+    connect(ui->termine, &QLineEdit::textEdited, docAnalyser, &DocumentsAnalyser::setTermine);
 }
 
 void MainWindow::imageResize() {
@@ -155,6 +160,10 @@ void MainWindow::stateChanged() {
             }
         }
     }
+}
+
+void MainWindow::recieveError(QString err) {
+    QMessageBox::critical(this, "Ошибка", err);
 }
 
 void MainWindow::loadImage() {
@@ -282,6 +291,14 @@ void MainWindow::removeResourseRow() {
     if(QMessageBox::Ok == QMessageBox::information(this, "Подтверждение",
         "Вы действительно хотите удалить эту строку?", QMessageBox::Ok | QMessageBox::Cancel)) {
         docAnalyser->removeRow(ui->resourceList->currentIndex().row());
+    }
+}
+
+void MainWindow::openHelp() {
+    if(QFileInfo("doc.pdf").exists() && QFileInfo("doc.pdf").isReadable()) {
+        QDesktopServices::openUrl(QUrl("doc.pdf"));
+    } else {
+        QMessageBox::critical(this, "Ошибка", "Не найден файл справки");
     }
 }
 

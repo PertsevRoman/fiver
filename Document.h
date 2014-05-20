@@ -6,19 +6,21 @@
 #define __Document_h__
 
 #include <QObject>
+#include <QVector>
 
 #include <boost/regex.hpp>
 
 #include <lem/solarix/solarix_grammar_engine.h>
 
 #include "documenterrors.h"
+#include "categorymaster.h"
 
-class Document : public QObject {
+class Document : public QObject, public CategoryMaster {
     Q_OBJECT
 
 protected:
     std::string uri;
-    std::string text;
+    QVector<QString> lemmas;
     std::string docType;
 
     DocumentState::ProcessingState state;
@@ -40,11 +42,6 @@ public:
      */
     void setUri(std::string uri);
     /**
-     * @brief getText возвращает содержимое ресурса
-     * @return содержимое ресурса
-     */
-    std::string getText();
-    /**
      * @brief getDocType возвращает тип документа
      * @return тип документа
      */
@@ -53,6 +50,10 @@ public:
      * @brief prepareText Выполняет подготовку текста для синтаксического разбора
      */
     virtual void prepareText() = 0;
+    /**
+     * @brief getTone Вычисление тональности документа
+     */
+    virtual void refreshTone() = 0;
 
     //GET и SET методы для установки и получения значения состояния документа
     DocumentState::ProcessingState getState() const;
@@ -60,6 +61,32 @@ public:
 
     HGREN getGrammarEngine() const;
     void setGrammarEngine(const HGREN &engine);
+
+    QVector<QString> getLemmas() const;
+    void setLemmas(const QVector<QString> &value);
+
+signals:
+    /**
+     * @brief percentCompleted Процентов завершено
+     */
+    void percentCompleted(int);
+    /**
+     * @brief currentTask Текущее задание
+     */
+    void message(QString);
+    /**
+     * @brief docTone Тональность документа
+     */
+    void sendTone(QString);
+    /**
+     * @brief trySetInfo Попытка отправить информацию в нужную колонку
+     * @param column
+     */
+    void trySetInfo(int column, QString);
+    /**
+     * @brief textPrepared Подготовка текста закончена
+     */
+    void textPrepared();
 
 protected:
     virtual void init();

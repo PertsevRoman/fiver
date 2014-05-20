@@ -1,16 +1,6 @@
 #include "DataModel.h"
 #include "TriangleNumber.h"
 
-
-int DataModel::getMapRowCount() const
-{
-    return mapRowCount;
-}
-
-void DataModel::setMapRowCount(int value)
-{
-    mapRowCount = value;
-}
 DataModel::DataModel(QObject *parent) : QObject(parent) {
     init();
     sets();
@@ -18,6 +8,14 @@ DataModel::DataModel(QObject *parent) : QObject(parent) {
 }
 
 DataModel::~DataModel() {
+}
+
+int DataModel::getMapRowCount() const {
+    return mapRowCount;
+}
+
+void DataModel::setMapRowCount(int value) {
+    mapRowCount = value;
 }
 
 MainWindow *DataModel::getMainWindow() const {

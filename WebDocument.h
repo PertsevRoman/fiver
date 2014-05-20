@@ -16,11 +16,12 @@ class WebDocument: public Document
 {
     Q_OBJECT
 
-    //Кэш страницы
-    QVector<QString> cache;
-
     //Менеджер соединения
     QNetworkAccessManager* man;
+    QNetworkAccessManager* tycAccess;
+
+    int tycRanc;
+    int gpRanc;
 
 public:
     explicit WebDocument(QObject *parent = 0);
@@ -34,7 +35,22 @@ public:
      * @brief parse парсит исходник
      */
     void parse(QNetworkReply *reply);
+    /**
+     * @brief prepareText Подготовка текста
+     */
     void prepareText();
+    /**
+     * @brief getTone Оценка тональности документа
+     */
+    void refreshTone();
+    /**
+     * @brief parseTYC Извлечение тИЦ сайта
+     * @param reply Ответ
+     */
+    void parseTYC(QNetworkReply *reply);
+    
+private slots:
+    void onNRBytesLoaded(qint64 loaded, qint64 total);
 
 private:
     void init();

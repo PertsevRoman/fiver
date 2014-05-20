@@ -13,6 +13,7 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QSpinBox>
+#include <QDesktopServices>
 
 #include "DataModel.h"
 #include "DocumentsAnalyser.h"
@@ -27,14 +28,16 @@
 #include "progressbardelegate.h"
 
 #include "codes.h"
+#include "categorymaster.h"
 
+class DocumentsAnalyser;
 class DataModel;
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public CategoryMaster
 {
     Q_OBJECT
 
@@ -64,7 +67,7 @@ class MainWindow : public QMainWindow
     std::pair<std::string, std::vector<std::string> > currentImageData;
 
     //Оценки тональности
-    QMap<int, QString> voteDefends;
+//    QMap<int, QString> voteDefends;
 
     //Старый виджет стека
     int oldStackWidget;
@@ -104,6 +107,11 @@ public slots:
      * @brief optionsChanged Вызывается при смене настроек
      */
     void stateChanged();
+    /**
+     * @brief recieveError Принимает сообщение об ошибке
+     * @param err Сообщений
+     */
+    void recieveError(QString err);
 
 private slots:
     /**
@@ -156,6 +164,10 @@ private slots:
      * @brief removeResourseRow Процедура удаления строки
      */
     void removeResourseRow();
+    /**
+     * @brief openHelp Открыть справку
+     */
+    void openHelp();
 };
 
 #endif

@@ -4,16 +4,18 @@
 #include <QDialog>
 #include <QMap>
 
+#include "categorymaster.h"
+
 namespace Ui {
 class InsertArticleDialog;
 }
 
-class InsertArticleDialog : public QDialog
+class InsertArticleDialog : public QDialog, public CategoryMaster
 {
     Q_OBJECT
 
     //Оценки тональности
-    QMap<int, QString> voteDefends;
+//    QMap<int, QString> voteDefends;
 
 public:
     explicit InsertArticleDialog(QWidget *parent = 0);
