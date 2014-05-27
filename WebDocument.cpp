@@ -91,30 +91,7 @@ void WebDocument::prepareText() {
 }
 
 void WebDocument::refreshTone() {
-    boost::thread *th = new boost::thread([this](){
-        QVector<uint> uintCode = QString::fromStdString(uri).toUcs4();
-        int stSum = 0;
-
-        foreach (uint val, uintCode) {
-            stSum += val;
-        }
-
-        int sum = 0;
-        while(stSum > 10) {
-            while(stSum != 0) {
-                sum += stSum % 10;
-                stSum /= 10;
-            }
-
-            stSum = sum;
-            sum = 0;
-        }
-
-        if(!stSum) {
-            emit sendTone("Нет возможности определить тональность");
-        } else {
-            emit sendTone(voteDefends[stSum - 5]);
-        }
+    boost::thread *th = new boost::thread([this]() {
     });
 
     th->detach();

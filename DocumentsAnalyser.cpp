@@ -170,9 +170,86 @@ void DocumentsAnalyser::reloadGrammaEngine() {
 }
 
 void DocumentsAnalyser::docTextPrepared() {
+    //Документ
     Document* doc = qobject_cast<Document*>(sender());
-    boost::thread *th = new boost::thread([doc]() {
-        doc->refreshTone();
+
+    //Анализирующий поток
+    boost::thread *th = new boost::thread([this, doc]() {
+        //Локальная переменная для грамматического движка
+        HGREN gren = this->hEngine;
+
+        //Извлечение леммы
+        QVector<QString> docLemmas = doc->getLemmas();
+
+        //Флаги морфологического анализа
+        const int morFlags = SOL_GREN_ENABLE_RECONSTRUCTION | SOL_GREN_MODEL;
+        const int constraints = (20 << 22) | 60000;
+
+        mx.lock();
+
+        qDebug() << "Синтаксический анализ предложений";
+#pragma omp parallel for private(gren)
+        for(int i = 0; i < docLemmas.size(); i++) {
+            //Проводим анализ предложения
+            qDebug() << "Анализ (" << i << ")";
+            HGREN_RESPACK syn = sol_SyntaxAnalysis(gren, docLemmas[i].toStdWString().data(), morFlags, 0, constraints, -1);
+
+            qDebug() << "Поиск самой короткой альтернативы (" << i << ")";
+            //Количество графов
+            const int graphCount = sol_CountGrafs(syn);
+            //Поиск самой короткой альтернативы
+            int minIndex = -1, minv = 1000000;
+            for(int j = 0; j < graphCount; j++) {
+                const int nroots = sol_CountRoots(syn, j);
+
+                if(nroots < minv) {
+                    minv = nroots;
+                    minIndex = i;
+                }
+            }
+
+            qDebug() << "Буфер (" << i << ")";
+            //Создание буфера
+            const int maxLexLen = sol_MaxLexemLen(gren);
+            wchar_t *buf = new wchar_t[maxLexLen];
+            memset(buf, 0, maxLexLen);
+            //Синтаксический токен
+            QString synToken;
+
+            qDebug() << "Разбор самой короткой альтернативы (" << i << ")";
+            //Разбор самой короткой альтернативы
+            const int nroot = sol_CountRoots(syn, minIndex);
+            for(int j = 1; j < nroot - 1; j++) {
+                HGREN_TREENODE node = sol_GetRoot(syn, minIndex, j);
+
+                //Получение количества листьев
+                const int leafsCount = sol_CountLeafs(node);
+                //Обход листьев
+                for(int k = 0; k < leafsCount; k++) {
+                    HGREN_TREENODE leaf = sol_GetLeaf(node, k);
+
+                    //Текст узла
+                    sol_GetNodeContents(leaf, buf);
+
+                    //Дополнение синтаксической единицы
+                    synToken += QString::fromWCharArray(buf);
+                }
+
+                qDebug() << synToken;
+                synToken.clear();
+                memset(buf, 0, maxLexLen);
+            }
+
+            qDebug() << "Очистка (" << i << ")";
+            //Очистка буфера
+            delete [] buf;
+
+            //Очистка результатов разбора
+            sol_DeleteResPack(syn);
+        }
+
+        mx.unlock();
+//        doc->refreshTone();
     });
 
     th->detach();

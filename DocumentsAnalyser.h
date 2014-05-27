@@ -12,6 +12,7 @@ using namespace std;
 #include <QStandardItem>
 #include <QMap>
 #include <QSet>
+#include <QDebug>
 
 #include "Document.h"
 #include "FileDocument.h"
@@ -24,6 +25,8 @@ using namespace std;
 #include <boost/thread/mutex.hpp>
 
 #include <lem/solarix/solarix_grammar_engine.h>
+
+#include <omp.h>
 
 class DataModel;
 

@@ -89,6 +89,9 @@ unix:!macx {
 
     INCLUDEPATH += $$PWD/../../../../opt/solarix/include
     DEPENDPATH += $$PWD/../../../../opt/solarix/include
+
+    QMAKE_CXXFLAGS += -fopenmp
+    QMAKE_LFLAGS += -fopenmp
 } else:win32 {
     CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Programming/boost/lib/ -lboost_system-mgw48-1_55 -lboost_system-mgw48-mt-1_55 -lboost_thread-mgw48-mt-1_55 -lboost_regex-mgw48-1_55
     else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Programming/boost/lib/ -lboost_system-mgw48-d-1_55 -lboost_system-mgw48-mt-d-1_55 -lboost_thread-mgw48-mt-d-1_55 -lboost_regex-mgw48-d-1_55
